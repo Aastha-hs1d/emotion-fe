@@ -54,7 +54,8 @@ export const AudioRecorder = ({ setEmotion }: { setEmotion: React.Dispatch<React
     await contextRef.current?.close();
 
     const raw = flatten(chunksRef.current);
-    const wav = encodeWav(raw, 44100);
+    const norm = normalizeRMS(raw);
+    const wav = encodeWav(norm, 44100);
 
     const blob = new Blob([wav.toBuffer()], { type: 'audio/wav' });
     setAudioBlob(blob);
