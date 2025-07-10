@@ -54,9 +54,7 @@ export const AudioRecorder = ({ setEmotion }: { setEmotion: React.Dispatch<React
     await contextRef.current?.close();
 
     const raw = flatten(chunksRef.current);
-    const norm = normalizeRMS(raw);
-    const padded = padTo3s(norm, 44100);
-    const wav = encodeWav(padded, 44100);
+    const wav = encodeWav(raw, 44100);
 
     const blob = new Blob([wav.toBuffer()], { type: 'audio/wav' });
     setAudioBlob(blob);
@@ -87,15 +85,6 @@ export const AudioRecorder = ({ setEmotion }: { setEmotion: React.Dispatch<React
   };
 
   /**
-   * Pads or trims buffer to exactly 3 seconds.
-   */
-  const padTo3s = (buf: Float32Array, rate: number) => {
-    const len = rate * 3;
-    if (buf.length >= len) return buf.slice(0, len);
-    const padded = new Float32Array(len);
-    padded.set(buf);
-    return padded;
-  };
 
   /**
    * Encodes samples to a WAV file.
